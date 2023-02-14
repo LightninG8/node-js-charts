@@ -1,0 +1,26 @@
+{
+  "name": "js-charts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1", 
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LightninG8/node-js-charts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LightninG8/node-js-charts/issues"
+  },
+  "homepage": "https://github.com/LightninG8/node-js-charts#readme",
+  "dependencies": {
+    "chartjs-node-canvas": "^4.1.6",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
+}
