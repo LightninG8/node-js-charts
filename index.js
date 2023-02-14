@@ -19,9 +19,9 @@ app.get("/chart", async (req, res) => {
 
 
   const data = req.query.type == 'strategies' ? strategies.map((el) => el.value)
-             : req.query.type == 'drivers' ? strategies.map((el) => el.value) : [];
+             : req.query.type == 'drivers' ? drivers.map((el) => el.value) : [];
 
-  const labels = req.query.type == 'strategies' ? drivers.map((el) => el.title)
+  const labels = req.query.type == 'strategies' ? strategies.map((el) => el.title)
   : req.query.type == 'drivers' ? drivers.map((el) => el.title) : [];
 
   const config = {
