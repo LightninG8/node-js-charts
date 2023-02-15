@@ -86,21 +86,22 @@ app.get("/chart", async (req, res) => {
 
 
 
-app.get('/maxStrategy', (req, res) => {
+app.get('/max', (req, res) => {
   const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
 
-  const strategies = getStrategies(answers);
+  const data = req.query.type == 'strategies' ? getStrategies(answers)
+               : req.query.type == 'drivers' ? getDrivers(answers) : [];
 
   function byField(field) {
     return (a, b) => a[field] > b[field] ? 1 : -1;
   }
 
 
-  strategies.sort(byField('value'));
+  data.sort(byField('value'));
 
-  const maximalStrategy = strategies[strategies.length - 1];
+  const maximal = data[data.length - 1];
 
-  res.json({max_strategy: maximalStrategy.title});
+  res.json({max_strategy: maximal.title});
 });
 
 app.listen(port, () => {
