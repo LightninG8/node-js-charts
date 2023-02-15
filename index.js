@@ -35,7 +35,7 @@ app.get("/chart", async (req, res) => {
         labels: labels,
         datasets: [
           {
-            label: "Стратегия",
+            label: label,
             data: data,
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
