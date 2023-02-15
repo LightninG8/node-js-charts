@@ -100,7 +100,7 @@ app.get('/maxStrategy', (req, res) => {
 
   const maximalStrategy = strategies[strategies.length - 1];
 
-  res.send(maximalStrategy.title);
+  res.json({max_strategy: maximalStrategy.title});
 });
 
 app.listen(port, () => {
