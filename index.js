@@ -6,84 +6,82 @@ const app = express();
 const port = 3000;
 
 app.get("/chart", async (req, res) => {
-  const width = 800;
-  const height = 600;
-
-  const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
-
-  const strategies = getStrategies(answers);
-
-  const drivers = getDrivers(answers);
-
-  const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
-
-
-  const data = req.query.type == 'strategies' ? strategies.map((el) => el.value)
-             : req.query.type == 'drivers' ? drivers.map((el) => el.value) : [];
-
-  const labels = req.query.type == 'strategies' ? strategies.map((el) => el.title)
-  : req.query.type == 'drivers' ? drivers.map((el) => el.title) : [];
-
-  const config = {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Стратегия",
-          data: data,
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 159, 64, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255,99,132,1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-            "rgba(255, 159, 64, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    },
-    plugins: [{
-			id: 'background-colour',
-			beforeDraw: (chart) => {
-				const ctx = chart.ctx;
-				ctx.save();
-				ctx.fillStyle = 'white';
-				ctx.fillRect(0, 0, width, height);
-				ctx.restore();
-			}
-		}]
-  };
-
-  const buffer = await chartJSNodeCanvas.renderToBuffer(config);
-
-  const fileName = __dirname + `/images/${strategies.map((el) => el.value).join('_')}_${req.query.type}.jpg`;
-
-  fs.writeFileSync(fileName, buffer);
-
-  // res.writeHead(304, {
-  //   'Content-Type': 'image/png',
-  //   'Content-Length': buffer.length,
-  //   'x-content-type-options': 'nosniff',
-  //   'x-frame-options': 'ALLOWALL',
-  //   'x-xss-protection': '1; mode=block'
-  // });
-
-  res.sendFile(fileName);
-
-
-
-  // res.end(image); 
-
+  try {
+    const width = 800;
+    const height = 600;
+  
+    const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
+  
+    const strategies = getStrategies(answers);
+  
+    const drivers = getDrivers(answers);
+  
+    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
+  
+  
+    const data = req.query.type == 'strategies' ? strategies.map((el) => el.value)
+               : req.query.type == 'drivers' ? drivers.map((el) => el.value) : [];
+  
+    const labels = req.query.type == 'strategies' ? strategies.map((el) => el.title)
+    : req.query.type == 'drivers' ? drivers.map((el) => el.title) : [];
+  
+  
+    const label = req.query.type == 'strategies' ? 'Стратегия'
+    : req.query.type == 'drivers' ? 'Драйвер' : '';
+  
+    const config = {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Стратегия",
+            data: data,
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255,99,132,1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      plugins: [{
+        id: 'background-colour',
+        beforeDraw: (chart) => {
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, width, height);
+          ctx.restore();
+        }
+      }]
+    };
+  
+    const buffer = await chartJSNodeCanvas.renderToBuffer(config);
+  
+    const fileName = __dirname + `/images/${strategies.map((el) => el.value).join('_')}_${req.query.type}.jpg`;
+  
+    fs.writeFileSync(fileName, buffer);
+  
+  
+    res.sendFile(fileName);
+  
+  } catch (e) {
+    console.log(e);
+  }
+  
 });
 
 
@@ -100,9 +98,9 @@ app.get('/minStrategy', (req, res) => {
 
   strategies.sort(byField('value'));
 
-  const minimalStrategy = strategies[0];
+  const maximalStrategy = strategies[strategies.length - 1];
 
-  res.send(minimalStrategy.title);
+  res.send(maximalStrategy.title);
 });
 
 app.listen(port, () => {
