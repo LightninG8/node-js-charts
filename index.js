@@ -86,7 +86,7 @@ app.get("/chart", async (req, res) => {
 
 
 
-app.get('/minStrategy', (req, res) => {
+app.get('/maxStrategy', (req, res) => {
   const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
 
   const strategies = getStrategies(answers);
