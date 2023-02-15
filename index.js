@@ -64,22 +64,25 @@ app.get("/chart", async (req, res) => {
 		}]
   };
 
-  const image = await chartJSNodeCanvas.renderToBuffer(config);
+  const buffer = await chartJSNodeCanvas.renderToBuffer(config);
 
-  // const fileName = __dirname + `/images/${strategies.map((el) => el.value).join('_')}_${req.query.type}.jpg`;
+  const fileName = __dirname + `/images/${strategies.map((el) => el.value).join('_')}_${req.query.type}.jpg`;
 
-  // fs.writeFileSync(fileName, buffer);
+  fs.writeFileSync(fileName, buffer);
 
-  res.writeHead(304, {
-    'Content-Type': 'image/png',
-    'Content-Length': image.length,
-  });
+  // res.writeHead(304, {
+  //   'Content-Type': 'image/png',
+  //   'Content-Length': buffer.length,
+  //   'x-content-type-options': 'nosniff',
+  //   'x-frame-options': 'ALLOWALL',
+  //   'x-xss-protection': '1; mode=block'
+  // });
 
-  // res.sendFile(fileName);
+  res.sendFile(fileName);
 
 
 
-  res.end(image); 
+  // res.end(image); 
 
 });
 
