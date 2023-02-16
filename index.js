@@ -77,9 +77,11 @@ app.get("/chart", async (req, res) => {
         },
         plugins: {
           datalabels: {
-            color: "#FFFFFF",
-          },
-        },
+            anchor: 'start',
+            align: 'end',
+  
+          } 
+        }
       },
     };
 
@@ -91,9 +93,11 @@ app.get("/chart", async (req, res) => {
         req.query.type
       }.jpg`;
 
-    fs.writeFileSync(fileName, buffer);
+    // fs.writeFileSync(fileName, buffer);
 
-    res.sendFile(fileName);
+    // res.sendFile(fileName);
+
+    res.end(buffer);
   } catch (e) {
     console.log(e);
   }
