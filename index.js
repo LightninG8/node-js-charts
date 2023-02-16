@@ -1,5 +1,6 @@
 const express = require("express");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
+const ChartDataLabels = require("chartjs-plugin-datalabels");
 const fs = require("fs");
 
 const app = express();
@@ -9,26 +10,40 @@ app.get("/chart", async (req, res) => {
   try {
     const width = 800;
     const height = 600;
-  
-    const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
-  
+
+    const answers = req.query.answers
+      .replace("[", "")
+      .replace("]", "")
+      .split(",")
+      .map((el) => +el);
+
     const strategies = getStrategies(answers);
-  
+
     const drivers = getDrivers(answers);
-  
+
     const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height });
-  
-  
-    const data = req.query.type == 'strategies' ? strategies.map((el) => el.value)
-               : req.query.type == 'drivers' ? drivers.map((el) => el.value) : [];
-  
-    const labels = req.query.type == 'strategies' ? strategies.map((el) => el.title)
-    : req.query.type == 'drivers' ? drivers.map((el) => el.title) : [];
-  
-  
-    const label = req.query.type == 'strategies' ? 'Стратегия'
-    : req.query.type == 'drivers' ? 'Драйвер' : '';
-  
+
+    const data =
+      req.query.type == "strategies"
+        ? strategies.map((el) => el.value)
+        : req.query.type == "drivers"
+        ? drivers.map((el) => el.value)
+        : [];
+
+    const labels =
+      req.query.type == "strategies"
+        ? strategies.map((el) => el.title)
+        : req.query.type == "drivers"
+        ? drivers.map((el) => el.title)
+        : [];
+
+    const label =
+      req.query.type == "strategies"
+        ? "Стратегия"
+        : req.query.type == "drivers"
+        ? "Драйвер"
+        : "";
+
     const config = {
       type: "bar",
       data: {
@@ -37,60 +52,76 @@ app.get("/chart", async (req, res) => {
           {
             label: label,
             data: data,
-            backgroundColor: [
-              "#5da8b0",
-              "rgba(56,199,195,1)",
-              "#ece9e6",
-            ],
-            borderWidth: 1,
+            backgroundColor: ["#5da8b0", "rgba(56,199,195,1)"],
           },
         ],
       },
-      plugins: [{
-        id: 'background-colour',
-        beforeDraw: (chart) => {
-          const ctx = chart.ctx;
-          ctx.save();
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, width, height);
-          ctx.restore();
-        }
-      }]
+      plugins: [
+        {
+          id: "background-colour",
+          beforeDraw: (chart) => {
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+          },
+        },
+        ChartDataLabels,
+      ],
+      options: {
+        scales: {
+          y: {
+            max: 30,
+          },
+        },
+        plugins: {
+          datalabels: {
+            color: "#FFFFFF",
+          },
+        },
+      },
     };
-  
+
     const buffer = await chartJSNodeCanvas.renderToBuffer(config);
-  
-    const fileName = __dirname + `/images/${strategies.map((el) => el.value).join('_')}_${req.query.type}.jpg`;
-  
+
+    const fileName =
+      __dirname +
+      `/images/${strategies.map((el) => el.value).join("_")}_${
+        req.query.type
+      }.jpg`;
+
     fs.writeFileSync(fileName, buffer);
-  
-  
+
     res.sendFile(fileName);
-  
   } catch (e) {
     console.log(e);
   }
-  
 });
 
+app.get("/max", (req, res) => {
+  const answers = req.query.answers
+    .replace("[", "")
+    .replace("]", "")
+    .split(",")
+    .map((el) => +el);
 
-
-app.get('/max', (req, res) => {
-  const answers = req.query.answers.replace('[', '').replace(']', '').split(',').map((el) => +el);
-
-  const data = req.query.type == 'strategies' ? getStrategies(answers)
-               : req.query.type == 'drivers' ? getDrivers(answers) : [];
+  const data =
+    req.query.type == "strategies"
+      ? getStrategies(answers)
+      : req.query.type == "drivers"
+      ? getDrivers(answers)
+      : [];
 
   function byField(field) {
-    return (a, b) => a[field] > b[field] ? 1 : -1;
+    return (a, b) => (a[field] > b[field] ? 1 : -1);
   }
 
-
-  data.sort(byField('value'));
+  data.sort(byField("value"));
 
   const maximal = data[data.length - 1];
 
-  res.json({max: maximal.title});
+  res.json({ max: maximal.title });
 });
 
 app.listen(port, () => {
