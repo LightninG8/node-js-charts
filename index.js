@@ -99,10 +99,10 @@ app.get("/chart", async (req, res) => {
     fs.writeFileSync(fileName, buffer);
 
 
-    res.writeHead(304, {
-    'Content-Type': 'image/jpg',
-    'Content-Length': buffer.length,
-  });
+  //   res.writeHead(304, {
+  //   'Content-Type': 'image/jpg',
+  //   'Content-Length': buffer.length,
+  // });
 
     res.sendFile(fileName);
 
