@@ -15,7 +15,7 @@ app.get("/chart", async (req, res) => {
       .replace("[", "")
       .replace("]", "")
       .split(",")
-      .map((el) => +el);
+      .map((el) => isNaN(+el) ? 0 : +el);
 
     const strategies = getStrategies(answers);
 
@@ -117,7 +117,7 @@ app.get("/max", (req, res) => {
     .replace("[", "")
     .replace("]", "")
     .split(",")
-    .map((el) => +el);
+    .map((el) => isNaN(+el) ? 0 : +el);
 
   const data =
     req.query.type == "strategies"
