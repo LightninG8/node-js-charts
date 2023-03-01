@@ -96,7 +96,7 @@ app.get("/chart", async (req, res) => {
 
     
 
-    fs.writeFileSync(fileName, buffer);
+    // fs.writeFileSync(fileName, buffer);
 
 
     // res.writeHead(304, {
