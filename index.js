@@ -113,7 +113,7 @@ app.get("/chart", async (req, res) => {
 
     res.setHeader("Content-Type", "image/jpg");
 
-    fs.readFile("./image.jpg", (err, image) => {
+    fs.readFile(filename, (err, image) => {
       res.end(image);
     });
 
