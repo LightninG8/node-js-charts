@@ -99,14 +99,24 @@ app.get("/chart", async (req, res) => {
     fs.writeFileSync(fileName, buffer);
 
 
-    res.writeHead(304, {
-      'Content-Type': 'image/jpg',
-      'Content-Length': buffer.length,
-    });
+    // res.writeHead(304, {
+    //   'Content-Type': 'image/jpg',
+    //   'Content-Length': buffer.length,
+    // });
 
-    res.sendFile(fileName);
+    // res.sendFile(fileName);
+    
 
     // res.end(buffer);
+
+    res.statusCode = 200;
+
+    res.setHeader("Content-Type", "image/jpg");
+
+    fs.readFile("./image.jpg", (err, image) => {
+      res.end(image);
+    });
+
   } catch (e) {
     console.log(e);
   }
