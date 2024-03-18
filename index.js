@@ -173,7 +173,7 @@ app.post("/send_bot_notification", async (req, res) => {
 
     fs.unlink(filePath, () => {});
 
-    if (!response.data.link) {
+    if (!response?.data?.link) {
       return;
     }
 
