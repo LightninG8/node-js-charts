@@ -12,4 +12,4 @@ run:
   scriptName: index.js
   command: npm run start
   persistenceMount: /data
-  containerPort: 3000
+  containerPort: 80
